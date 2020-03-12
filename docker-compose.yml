@@ -1,0 +1,44 @@
+version: '3'
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  api: # service name
+    build:
+      context: . # start point
+      dockerfile: ./compose/local/api/Dockerfile # path of docker file that needs to be build
+    image: some_name_local_api #specific name for the docker image
+    depends_on: # any dependency ?
+      - postgres
+    volumes: # volumes to mount for current dir use dot (.) it will copy current dir to /app inside docker
+      - .:/app # it can be any folder : copy to this /app
+    env_file: # envs that needs to be used inside the project in that service
+      - ./.envs/.local/.api
+      - ./.envs/.local/.postgres
+    ports:
+      - "8000:8000" # port that needs to be mounted
+    command: /start # command that needs to be run after starting like db migration run server etc
+  ui: # service name
+    build:
+      context: . # start point
+      dockerfile: ./compose/local/ui/Dockerfile
+    image: some_name_local_ui # name of the image
+    volumes:
+      - .:/app # mounting volume to /app it will copy the folder inside app and updates if file changes
+      - ./app/node_modules  # https://stackoverflow.com/questions/30043872/docker-compose-node-modules-not-present-in-a-volume-after-npm-install-succeeds
+    env_file: # env paths
+      - ./.envs/.local/.ui
+    ports: # port to expose
+      - "8080:8080"
+  postgres: # service name
+    build:
+      context: . # context
+      dockerfile: ./compose/production/postgres/Dockerfile # docker file for this service
+    image: some_name_local_postgres # image name
+    volumes:  # volumes to be mounted
+      - local_postgres_data:/var/lib/postgresql/data # local_db_path to docker postgres data folder
+      - local_postgres_data_backups:/backups # postgres backup db
+    env_file: # env files used inside the postgres
+      - ./.envs/.local/.postgres

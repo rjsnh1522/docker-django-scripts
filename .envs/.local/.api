@@ -1,0 +1,18 @@
+# General
+# ------------------------------------------------------------------------------
+USE_DOCKER=yes
+IPYTHONDIR=/app/.ipython
+
+EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+SENDGRID_API_KEY=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
+EMAIL_USE_TLS=True
+EMAIL_HOST=smtp.sendgrid.net
+EMAIL_HOST_USER=apikey
+EMAIL_HOST_PASSWORD=SENDGRID_API_KEY
+EMAIL_PORT=587
+DEFAULT_FROM_EMAIL=system@sporact
+SERVER_EMAIL=system@sporact
+
+FRONTEND_BASE_URL=http://localhost:8000
+REGISTRATION_SALT=registration
+ACCOUNT_ACTIVATION_DAYS=1
